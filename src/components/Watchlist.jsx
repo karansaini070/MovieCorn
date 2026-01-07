@@ -19,7 +19,7 @@ const Watchlist = () => {
 
   if (watchlist.length === 0) {
     return (
-    <Empty/>
+      <Empty />
     );
   }
 
@@ -39,7 +39,9 @@ const Watchlist = () => {
             {/* REMOVE BUTTON */}
             <button
               onClick={() => removeFromWatchlist(movie.id)}
-              className="absolute top-2 right-2 bg-black/70 hover:bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition"
+              className="absolute top-2 right-2 bg-black/70 hover:bg-red-600 text-white p-2 rounded-full 
+              opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition"
+
             >
               <Trash2 size={16} />
             </button>
