@@ -1,4 +1,4 @@
-import api from "./api";
+ import api from "./api";
 
 // ✅ POPULAR MOVIES
 export const getPopularMovies = () => {
@@ -38,3 +38,4 @@ export const getUpcomingMovies = () => {
 export const getNowPlayingMovies = () => {
   return api.get("/movie/now_playing");
 };
+

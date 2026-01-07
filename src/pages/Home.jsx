@@ -57,8 +57,8 @@ const Home = () => {
       {/* 🎬 LISTS */}
       <div className="p-4 sm:p-6 lg:p-10 flex flex-col gap-12">
         <Listslider movies={nowPlaying} listname={"NowPlaying List"} />
-        <Listslider movies={trending} listname={"Tranding List"} />
         <Listslider movies={topRated} listname={"TopRated List"} />
+        <Listslider movies={trending} listname={"Tranding List"} />
         <Listslider movies={upcoming} listname={"UpComing List"} />
       </div>
     </div>
