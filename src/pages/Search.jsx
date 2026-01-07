@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { searchMovies } from "../api/movieapi";
 import Card from "../components/Card";
 import Loading from "../components/Loading";
+import Empty from "../components/Empty"
 
 const Search = () => {
   const [searchParams] = useSearchParams();
@@ -30,7 +31,7 @@ const Search = () => {
   }, [query]);
 
   return (
-    <section className="px-4 sm:px-8 lg:px-12 py-6 sm:py-10 text-white">
+    <section className="px-4 overflow-hidden sm:px-8 lg:px-12 py-6 sm:py-10 text-white">
 
       {/* TITLE */}
       <h1 className="text-lg sm:text-xl lg:text-2xl mb-4 sm:mb-6">
@@ -48,7 +49,7 @@ const Search = () => {
       {/* NO RESULT */}
       {!loading && movies.length === 0 && (
         <p className="text-center text-gray-300 mt-10">
-          No movies found 😢
+          <Empty/>
         </p>
       )}
 
