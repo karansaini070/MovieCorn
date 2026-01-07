@@ -4,7 +4,8 @@ import api from "./api";
 export const getPopularMovies = () => {
   return api.get("/movie/popular");
 };
-// ✅ Top MOVIES
+
+// ✅ TOP RATED MOVIES
 export const getTopRatedMovies = () => {
   return api.get("/movie/top_rated");
 };
@@ -16,24 +17,24 @@ export const getMovieDetails = (id) => {
 
 // ✅ SEARCH MOVIES
 export const searchMovies = (query) => {
-  return api.get(`/search/movie`, {
+  return api.get("/search/movie", {
     params: {
-      query: query,
+      query,
     },
   });
 };
+
 // ✅ MOVIE TRAILER
 export const getMovieTrailer = (id) => {
   return api.get(`/movie/${id}/videos`);
 };
 
-    // getUpcomingMovies
-
+// ✅ UPCOMING MOVIES
 export const getUpcomingMovies = () => {
   return api.get("/movie/upcoming");
 };
-  
-      //  getNowPlayingMovies
+
+// ✅ NOW PLAYING MOVIES
 export const getNowPlayingMovies = () => {
   return api.get("/movie/now_playing");
 };
