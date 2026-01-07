@@ -10,7 +10,7 @@ function Searchbar() {
   const handleSearch = () => {
     if (!query.trim()) return;
     navigate(`/search?query=${query}`);
-    setQuery("")
+
   };
 
   return (
