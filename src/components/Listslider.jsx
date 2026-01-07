@@ -6,10 +6,10 @@ import "swiper/css/mousewheel";
 
 import Card from "./Card";
 
-const TopRated = ({ movies }) => {
+const Listslider = ({ movies ,listname}) => {
   return (
     <section className="relative">
-      <h2 className="text-amber-500 text-2xl mb-6">Top Rated Movies</h2>
+      <h2 className="text-amber-500 text-2xl mb-6">{listname}</h2>
 
       <Swiper
         className="w-full py-6"
@@ -19,7 +19,7 @@ const TopRated = ({ movies }) => {
         navigation
         mousewheel={{
           enabled: true,
-          forceToAxis: true,     // 👉 Shift + scroll = horizontal
+          forceToAxis: true,   // 👉 Shift + Scroll = horizontal
           sensitivity: 1,
         }}
         breakpoints={{
@@ -38,4 +38,4 @@ const TopRated = ({ movies }) => {
   );
 };
 
-export default TopRated;
+export default Listslider;

@@ -26,3 +26,14 @@ export const searchMovies = (query) => {
 export const getMovieTrailer = (id) => {
   return api.get(`/movie/${id}/videos`);
 };
+
+    // getUpcomingMovies
+
+export const getUpcomingMovies = () => {
+  return api.get("/movie/upcoming");
+};
+  
+      //  getNowPlayingMovies
+export const getNowPlayingMovies = () => {
+  return api.get("/movie/now_playing");
+};
