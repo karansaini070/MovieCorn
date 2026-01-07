@@ -21,7 +21,7 @@ const HomeSlider = ({ movies }) => {
         pagination={{ clickable: true }}
         mousewheel={{
           enabled: true,
-          forceToAxis: true,   // 👉 Shift + scroll
+          forceToAxis: true,   // Shift + scroll
         }}
         autoplay={{
           delay: 5000,

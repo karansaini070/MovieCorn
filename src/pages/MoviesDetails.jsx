@@ -47,14 +47,14 @@ const MoviesDetails = () => {
         setTrailerKey(trailer.key);
         setShowTrailer(true);
       } else {
-        alert("Trailer not available 😢");
+        alert("Trailer not available ");
       }
     } catch (error) {
       console.log("Trailer error:", error);
     }
   };
 
-  // ✅ ADD TO WATCHLIST
+  //  ADD TO WATCHLIST
   const handleAddToWatchlist = () => {
     const watchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
 

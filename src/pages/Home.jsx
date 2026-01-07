@@ -51,10 +51,10 @@ const Home = () => {
 
   return (
     <div className="flex flex-col gap-10 ">
-      {/* 🔥 HERO SLIDER */}
+      {/*  HERO SLIDER */}
       <HomeSlider movies={trending.slice(0, 5)} />
 
-      {/* 🎬 LISTS */}
+      {/* LISTS */}
       <div className="p-4 sm:p-6 lg:p-10 flex flex-col gap-12">
         <Listslider movies={nowPlaying} listname={"NowPlaying List"} />
         <Listslider movies={topRated} listname={"TopRated List"} />
