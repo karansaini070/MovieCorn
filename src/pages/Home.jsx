@@ -42,7 +42,7 @@ const Home = () => {
   }
 
   return (
-    <div className="flex flex-col gap-14">
+    <div className="flex flex-col gap-10 ">
       {/* 🔥 HERO SLIDER */}
       <HomeSlider movies={trending.slice(0, 5)} />
 
