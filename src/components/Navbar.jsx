@@ -1,17 +1,43 @@
 import { Popcorn } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import Searchbar from "./Searchbar";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [hidden, setHidden] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
   // 👇 Home page check
   const isHome = location.pathname === "/";
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY && currentScrollY > 80) {
+        // scrolling down
+        setHidden(true);
+      } else {
+        // scrolling up
+        setHidden(false);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
   return (
-    <header
+    <motion.header
+      initial={{ y: 0 }}
+      animate={{ y: hidden ? "-120%" : "0%" }}
+      transition={{ type: "spring", stiffness: 120, damping: 20 }}
       className={`
         w-full
         flex flex-col sm:flex-row
@@ -47,7 +73,7 @@ const Navbar = () => {
         MovieCorn
       </motion.h1>
 
-      {/* SEARCH BAR */}
+      {/* SEARCH + WATCHLIST */}
       <div className="w-full sm:w-auto flex justify-center gap-2 sm:justify-end">
         <motion.button
           onClick={() => navigate("/watchlist")}
@@ -55,13 +81,13 @@ const Navbar = () => {
           animate={{ opacity: 1, y: 0 }}
           whileHover={{ scale: 1.03 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="bg-white/5 backdrop-blur-md hover:bg-white/10 flex justify-center items-center w-fit   px-5 rounded-2xl"
+          className="bg-white/5 backdrop-blur-md hover:bg-white/10 flex justify-center items-center w-fit px-5 rounded-2xl"
         >
           ❤️ Watchlist
         </motion.button>
         <Searchbar />
       </div>
-    </header>
+    </motion.header>
   );
 };
 
