@@ -8,31 +8,35 @@ import "swiper/css/autoplay";
 import "swiper/css/pagination";
 import "swiper/css/mousewheel";
 
-/* slide fade */
+/* slide fade – thoda slow */
 const slideVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.9, ease: "easeOut" },
   },
 };
 
-/* background zoom */
+/* background zoom – slow & cinematic */
 const bgZoom = {
   hidden: { scale: 1 },
   visible: {
-    scale: 1.05,
-    transition: { duration: 5.5, ease: "easeOut" },
+    scale: 1.03,
+    transition: { duration: 7, ease: "easeOut" },
   },
 };
 
-/* text animation */
+/* text animation – smooth stagger */
 const textVariants = {
   hidden: { opacity: 0, y: 30 },
   visible: (delay = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { delay, duration: 0.6, ease: "easeOut" },
+    transition: {
+      delay,
+      duration: 0.75,
+      ease: "easeOut",
+    },
   }),
 };
 
@@ -45,16 +49,31 @@ const HomeSlider = ({ movies }) => {
         modules={[Autoplay, Pagination, Mousewheel]}
         slidesPerView={1}
         loop
+
+        /* 🔥 MOST IMPORTANT FIX */
+        mousewheel={{
+          forceToAxis: true,
+          sensitivity: 0.25,     // 🔥 slow scroll
+          thresholdDelta: 80,    // 🔥 ek proper scroll par hi slide
+          releaseOnEdges: true,
+        }}
+
         pagination={{ clickable: true }}
-        mousewheel={{ forceToAxis: true }}
-        autoplay={{ delay: 5000, disableOnInteraction: false }}
+
+        autoplay={{
+          delay: 5200,           // thoda gap
+          disableOnInteraction: false,
+        }}
+
+        speed={1100}             // 🔥 slide transition slow
+
         className="w-full h-[60vh] sm:h-[70vh]"
       >
         {movies.map((movie) => (
           <SwiperSlide key={movie.id}>
             {({ isActive }) => (
               <motion.div
-                key={isActive ? movie.id : "inactive"} // 🔥 IMPORTANT
+                key={isActive ? movie.id : "inactive"}
                 className="w-full h-full relative overflow-hidden"
                 variants={slideVariants}
                 initial="hidden"
@@ -71,7 +90,7 @@ const HomeSlider = ({ movies }) => {
                   animate={isActive ? "visible" : "hidden"}
                 />
 
-                {/* OVERLAY + TEXT */}
+                {/* OVERLAY + TEXT (UNCHANGED) */}
                 <div className="relative z-10 w-full h-full flex items-end">
                   <div className="w-full bg-black/60 p-6 sm:p-10">
                     <motion.h1
@@ -80,7 +99,7 @@ const HomeSlider = ({ movies }) => {
                       variants={textVariants}
                       initial="hidden"
                       animate={isActive ? "visible" : "hidden"}
-                      custom={0.1}
+                      custom={0.15}
                     >
                       {movie.title}
                     </motion.h1>
@@ -91,7 +110,7 @@ const HomeSlider = ({ movies }) => {
                       variants={textVariants}
                       initial="hidden"
                       animate={isActive ? "visible" : "hidden"}
-                      custom={0.25}
+                      custom={0.3}
                     >
                       {movie.overview}
                     </motion.p>
@@ -103,7 +122,7 @@ const HomeSlider = ({ movies }) => {
                       variants={textVariants}
                       initial="hidden"
                       animate={isActive ? "visible" : "hidden"}
-                      custom={0.4}
+                      custom={0.45}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
