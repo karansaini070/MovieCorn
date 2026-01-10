@@ -1,11 +1,40 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Mousewheel } from "swiper/modules";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 import "swiper/css";
 import "swiper/css/autoplay";
 import "swiper/css/pagination";
 import "swiper/css/mousewheel";
+
+/* slide fade */
+const slideVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
+
+/* background zoom */
+const bgZoom = {
+  hidden: { scale: 1 },
+  visible: {
+    scale: 1.05,
+    transition: { duration: 5.5, ease: "easeOut" },
+  },
+};
+
+/* text animation */
+const textVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (delay = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay, duration: 0.6, ease: "easeOut" },
+  }),
+};
 
 const HomeSlider = ({ movies }) => {
   const navigate = useNavigate();
@@ -15,59 +44,75 @@ const HomeSlider = ({ movies }) => {
       <Swiper
         modules={[Autoplay, Pagination, Mousewheel]}
         slidesPerView={1}
-        loop={true}
-
-        /*  arrows hata diye (big movie apps jaise) */
-        navigation={false}
-
-        /*  clean clickable dots */
+        loop
         pagination={{ clickable: true }}
-
-        /*  CONTROLLED MOUSE WHEEL (MOST IMPORTANT UPGRADE) */
-        mousewheel={{
-          forceToAxis: true,
-          sensitivity: 0.35,      // slow & premium
-          thresholdDelta: 70,     // accidental scroll block
-          releaseOnEdges: true,  // page scroll allow
-        }}
-
-        /*  cinematic autoplay */
-        autoplay={{
-          delay: 4500,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true,
-        }}
-
-        speed={900} // smooth transition
-
+        mousewheel={{ forceToAxis: true }}
+        autoplay={{ delay: 5000, disableOnInteraction: false }}
         className="w-full h-[60vh] sm:h-[70vh]"
       >
         {movies.map((movie) => (
           <SwiperSlide key={movie.id}>
-            <div
-              className="w-full h-full bg-cover bg-center flex items-end"
-              style={{
-                backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
-              }}
-            >
-              {/* OVERLAY */}
-              <div className="w-full bg-black/60 p-6 sm:p-10">
-                <h1 className="text-white text-2xl sm:text-4xl font-bold">
-                  {movie.title}
-                </h1>
+            {({ isActive }) => (
+              <motion.div
+                key={isActive ? movie.id : "inactive"} // 🔥 IMPORTANT
+                className="w-full h-full relative overflow-hidden"
+                variants={slideVariants}
+                initial="hidden"
+                animate={isActive ? "visible" : "hidden"}
+              >
+                {/* BACKGROUND */}
+                <motion.div
+                  className="absolute inset-0 bg-cover bg-center"
+                  style={{
+                    backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
+                  }}
+                  variants={bgZoom}
+                  initial="hidden"
+                  animate={isActive ? "visible" : "hidden"}
+                />
 
-                <p className="text-gray-300 mt-2 max-w-xl line-clamp-3">
-                  {movie.overview}
-                </p>
+                {/* OVERLAY + TEXT */}
+                <div className="relative z-10 w-full h-full flex items-end">
+                  <div className="w-full bg-black/60 p-6 sm:p-10">
+                    <motion.h1
+                      key={`title-${movie.id}-${isActive}`}
+                      className="text-white text-2xl sm:text-4xl font-bold"
+                      variants={textVariants}
+                      initial="hidden"
+                      animate={isActive ? "visible" : "hidden"}
+                      custom={0.1}
+                    >
+                      {movie.title}
+                    </motion.h1>
 
-                <button
-                  onClick={() => navigate(`/movie/${movie.id}`)}
-                  className="mt-4 inline-block bg-amber-500 text-black cursor-pointer font-semibold px-6 py-3 rounded-full hover:bg-amber-400 transition"
-                >
-                  Watch Now
-                </button>
-              </div>
-            </div>
+                    <motion.p
+                      key={`desc-${movie.id}-${isActive}`}
+                      className="text-gray-300 mt-2 max-w-xl line-clamp-3"
+                      variants={textVariants}
+                      initial="hidden"
+                      animate={isActive ? "visible" : "hidden"}
+                      custom={0.25}
+                    >
+                      {movie.overview}
+                    </motion.p>
+
+                    <motion.button
+                      key={`btn-${movie.id}-${isActive}`}
+                      onClick={() => navigate(`/movie/${movie.id}`)}
+                      className="mt-4 inline-block bg-amber-500 text-black font-semibold px-6 py-3 rounded-full hover:bg-amber-400 transition"
+                      variants={textVariants}
+                      initial="hidden"
+                      animate={isActive ? "visible" : "hidden"}
+                      custom={0.4}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      Watch Now
+                    </motion.button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
           </SwiperSlide>
         ))}
       </Swiper>
