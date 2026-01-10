@@ -24,7 +24,7 @@ const Watchlist = () => {
   }
 
   return (
-    <section className="px-4 cursor-pointer sm:px-8 lg:px-12 pt-50 text-white">
+    <section className="px-4 pt-30  sm:px-8 lg:px-12  text-white">
       <h1 className="text-2xl sm:text-3xl font-semibold mb-8">
         ❤️ My Watchlist
       </h1>

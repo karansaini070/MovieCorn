@@ -11,8 +11,6 @@ const Navbar = () => {
   const [hidden, setHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  // 👇 Home page check
-  const isHome = location.pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,7 +46,7 @@ const Navbar = () => {
         py-4
         fixed top-0 left-0 z-50
         transition-colors duration-300
-        ${isHome ? "bg-transparent" : "bg-black"}
+        bg-transparent
       `}
     >
       {/* LOGO */}
@@ -82,7 +80,7 @@ const Navbar = () => {
           animate={{ opacity: 1, y: 0 }}
           whileHover={{ scale: 1.03 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="bg-white/5 backdrop-blur-md hover:bg-white/10 flex justify-center items-center w-fit px-5 rounded-2xl
+          className="cursor-pointer bg-white/5 backdrop-blur-md hover:bg-white/10 flex justify-center items-center w-fit px-5 rounded-2xl
              text-black dark:text-white"
         >
           ❤️ Watchlist
