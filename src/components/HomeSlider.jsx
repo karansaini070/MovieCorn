@@ -8,7 +8,7 @@ import "swiper/css/autoplay";
 import "swiper/css/pagination";
 import "swiper/css/mousewheel";
 
-/* slide fade – thoda slow */
+/* slide fade – slow */
 const slideVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -17,7 +17,7 @@ const slideVariants = {
   },
 };
 
-/* background zoom – slow & cinematic */
+/* background zoom – cinematic */
 const bgZoom = {
   hidden: { scale: 1 },
   visible: {
@@ -50,24 +50,25 @@ const HomeSlider = ({ movies }) => {
         slidesPerView={1}
         loop
 
-        /* 🔥 MOST IMPORTANT FIX */
+        /* 🎯 one scroll = one slide */
         mousewheel={{
           forceToAxis: true,
-          sensitivity: 0.25,     // 🔥 slow scroll
-          thresholdDelta: 80,    // 🔥 ek proper scroll par hi slide
+          sensitivity: 0.25,
+          thresholdDelta: 80,
           releaseOnEdges: true,
         }}
 
         pagination={{ clickable: true }}
 
         autoplay={{
-          delay: 5200,           // thoda gap
+          delay: 5200,
           disableOnInteraction: false,
         }}
 
-        speed={1100}             // 🔥 slide transition slow
+        speed={1100}
 
-        className="w-full h-[60vh] sm:h-[70vh]"
+        /* 🔥 BIG HERO SIZE */
+        className="w-full h-[75vh] sm:h-[85vh] lg:h-[80vh]"
       >
         {movies.map((movie) => (
           <SwiperSlide key={movie.id}>
@@ -79,7 +80,7 @@ const HomeSlider = ({ movies }) => {
                 initial="hidden"
                 animate={isActive ? "visible" : "hidden"}
               >
-                {/* BACKGROUND */}
+                {/* BACKGROUND IMAGE */}
                 <motion.div
                   className="absolute inset-0 bg-cover bg-center"
                   style={{
@@ -90,8 +91,8 @@ const HomeSlider = ({ movies }) => {
                   animate={isActive ? "visible" : "hidden"}
                 />
 
-                {/* OVERLAY + TEXT (UNCHANGED) */}
-                <div className="relative z-10 w-full h-full flex items-end">
+                {/* OVERLAY + TEXT */}
+                <div className="relative z-10 w-full h-full flex items-end ">
                   <div className="w-full bg-black/60 p-6 sm:p-10">
                     <motion.h1
                       key={`title-${movie.id}-${isActive}`}

@@ -50,7 +50,7 @@ const Home = () => {
   }
 
   return (
-    <div className="flex flex-col gap-10 ">
+    <div className="flex flex-col  ">
       {/*  HERO SLIDER */}
       <HomeSlider movies={trending.slice(0, 5)} />
 
