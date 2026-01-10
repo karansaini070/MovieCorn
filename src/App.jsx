@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
 
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
@@ -40,7 +39,7 @@ const PageWrapper = ({ children }) => (
 const AppContent = () => {
   const location = useLocation();
 
-  // Navbar/Footer sirf in pages par
+  // Navbar/Footer sirf specific pages par
   const hideNavbar =
     location.pathname !== "/" &&
     location.pathname !== "/search" &&
@@ -79,21 +78,12 @@ const AppContent = () => {
             }
           />
 
-          {/* 🔐 Protected Watchlist */}
           <Route
             path="/watchlist"
             element={
-              <>
-                <SignedIn>
-                  <PageWrapper>
-                    <Watchlist />
-                  </PageWrapper>
-                </SignedIn>
-
-                <SignedOut>
-                  <RedirectToSignIn />
-                </SignedOut>
-              </>
+              <PageWrapper>
+                <Watchlist />
+              </PageWrapper>
             }
           />
 
