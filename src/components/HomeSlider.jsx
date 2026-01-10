@@ -1,10 +1,9 @@
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation, Pagination, Mousewheel } from "swiper/modules";
+import { Autoplay, Pagination, Mousewheel } from "swiper/modules";
 import { useNavigate } from "react-router-dom";
 
 import "swiper/css";
 import "swiper/css/autoplay";
-import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/mousewheel";
 
@@ -14,19 +13,33 @@ const HomeSlider = ({ movies }) => {
   return (
     <section className="w-full">
       <Swiper
-        modules={[Autoplay, Navigation, Pagination, Mousewheel]}
+        modules={[Autoplay, Pagination, Mousewheel]}
         slidesPerView={1}
         loop={true}
-        navigation
+
+        /*  arrows hata diye (big movie apps jaise) */
+        navigation={false}
+
+        /*  clean clickable dots */
         pagination={{ clickable: true }}
+
+        /*  CONTROLLED MOUSE WHEEL (MOST IMPORTANT UPGRADE) */
         mousewheel={{
-          enabled: true,
-          forceToAxis: true,   // Shift + scroll
+          forceToAxis: true,
+          sensitivity: 0.35,      // slow & premium
+          thresholdDelta: 70,     // accidental scroll block
+          releaseOnEdges: true,  // page scroll allow
         }}
+
+        /*  cinematic autoplay */
         autoplay={{
-          delay: 5000,
+          delay: 4500,
           disableOnInteraction: false,
+          pauseOnMouseEnter: true,
         }}
+
+        speed={900} // smooth transition
+
         className="w-full h-[60vh] sm:h-[70vh]"
       >
         {movies.map((movie) => (
@@ -49,7 +62,7 @@ const HomeSlider = ({ movies }) => {
 
                 <button
                   onClick={() => navigate(`/movie/${movie.id}`)}
-                  className="mt-4 inline-block bg-amber-500 text-black font-semibold px-6 py-3 rounded-full hover:bg-amber-400 transition"
+                  className="mt-4 inline-block bg-amber-500 text-black cursor-pointer font-semibold px-6 py-3 rounded-full hover:bg-amber-400 transition"
                 >
                   Watch Now
                 </button>

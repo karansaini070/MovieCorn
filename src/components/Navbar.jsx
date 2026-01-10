@@ -40,6 +40,7 @@ const Navbar = () => {
       transition={{ type: "spring", stiffness: 120, damping: 20 }}
       className={`
         w-full
+        
         flex flex-col sm:flex-row
         gap-4 sm:gap-0
         justify-between items-center
@@ -81,10 +82,13 @@ const Navbar = () => {
           animate={{ opacity: 1, y: 0 }}
           whileHover={{ scale: 1.03 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="bg-white/5 backdrop-blur-md hover:bg-white/10 flex justify-center items-center w-fit px-5 rounded-2xl"
+          className="bg-white/5 backdrop-blur-md hover:bg-white/10 flex justify-center items-center w-fit px-5 rounded-2xl
+             text-black dark:text-white"
         >
           ❤️ Watchlist
         </motion.button>
+
+
         <Searchbar />
       </div>
     </motion.header>
