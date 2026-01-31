@@ -1,14 +1,15 @@
 import { Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { searchMovies } from "../api/movieapi"; // 👈 aapki file ka path
+import { searchMovies } from "../api/movieapi";
 
 function Searchbar() {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const wrapperRef = useRef(null);
 
   // 🔍 Search trigger
   const handleSearch = (value = query) => {
@@ -28,19 +29,31 @@ function Searchbar() {
       try {
         setLoading(true);
         const res = await searchMovies(query);
-        setSuggestions(res.data.results.slice(0, 5)); // top 5
+        setSuggestions(res.data.results.slice(0, 5));
       } catch (err) {
         console.error(err);
       } finally {
         setLoading(false);
       }
-    }, 400); // debounce delay
+    }, 400);
 
     return () => clearTimeout(timer);
   }, [query]);
 
+  // ❌ Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setSuggestions([]);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <motion.div
+      ref={wrapperRef}
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.03 }}
@@ -90,7 +103,10 @@ function Searchbar() {
             {suggestions.map((movie) => (
               <div
                 key={movie.id}
-                onClick={() => handleSearch(movie.title)}
+                onClick={() => {
+                  setQuery(movie.title);      // ✅ input replace
+                  handleSearch(movie.title); // ✅ search
+                }}
                 className="px-4 py-2 cursor-pointer 
                            hover:bg-white/10 text-white"
               >
