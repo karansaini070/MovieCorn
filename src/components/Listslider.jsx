@@ -6,20 +6,19 @@ import "swiper/css/mousewheel";
 
 import Card from "./Card";
 
-const Listslider = ({ movies ,listname}) => {
+const Listslider = ({ movies, listname }) => {
   return (
     <section className="relative">
-      <h2 className="text-amber-500 text-2xl mb-6">{listname}</h2>
-
+      <h2 className="text-amber-500 font-bold text-2xl mb-6">{listname}</h2>
       <Swiper
         className="w-full py-6"
         modules={[Mousewheel, Navigation]}
         slidesPerView={2}
         spaceBetween={16}
-        navigation
+        navigation={window.innerWidth >= 768}
         mousewheel={{
           enabled: true,
-          forceToAxis: true,   // 👉 Shift + Scroll = horizontal
+          forceToAxis: true,
           sensitivity: 1,
         }}
         breakpoints={{
@@ -28,6 +27,7 @@ const Listslider = ({ movies ,listname}) => {
           1024: { slidesPerView: 5 },
         }}
       >
+
         {movies.map((movie) => (
           <SwiperSlide key={movie.id}>
             <Card elem={movie} />

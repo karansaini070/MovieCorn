@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Card from "../components/Card";
 import { Trash2 } from "lucide-react";
+import { Heart } from 'lucide-react';
 import Empty from "./Empty"
 
 const Watchlist = () => {
@@ -24,9 +25,9 @@ const Watchlist = () => {
   }
 
   return (
-    <section className="px-4 pt-30  sm:px-8 lg:px-12  text-white">
-      <h1 className="text-2xl sm:text-3xl font-semibold mb-8">
-        ❤️ My Watchlist
+    <section className="px-4 pt-40  sm:px-8 lg:px-12  text-white">
+      <h1 className="flex items-center gap-2 text-2xl text-amber-500 sm:text-3xl font-semibold mb-8">
+           <Heart size={30} color="red" fill="red"  /> My Watchlist
       </h1>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">

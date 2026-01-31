@@ -1,6 +1,7 @@
 import { Popcorn } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Heart } from 'lucide-react';
 import { useEffect, useState } from "react";
 import Searchbar from "./Searchbar";
 
@@ -80,6 +81,7 @@ const Navbar = () => {
           transition={{ duration: 0.3, ease: "easeOut" }}
           className="
             cursor-pointer
+            gap-2 items-center
             bg-white/5 backdrop-blur-md
             hover:bg-white/10
             flex justify-center items-center
@@ -87,7 +89,7 @@ const Navbar = () => {
             text-black dark:text-white
           "
         >
-          ❤️ Watchlist
+            <Heart size={20} color="red" fill="red"  /> Watchlist
         </motion.button>
 
         <Searchbar />
