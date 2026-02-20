@@ -30,7 +30,7 @@ const Home = () => {
         setTopRated(topRatedRes.data.results);
         setUpcoming(upcomingRes.data.results);
         setNowPlaying(nowPlayingRs.data.results);
-        
+
       } catch (error) {
         console.log("Home data error:", error);
       } finally {

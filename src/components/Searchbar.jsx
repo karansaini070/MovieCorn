@@ -11,14 +11,14 @@ function Searchbar() {
   const navigate = useNavigate();
   const wrapperRef = useRef(null);
 
-  // 🔍 Search trigger
+  //  Search trigger
   const handleSearch = (value = query) => {
     if (!value.trim()) return;
     setSuggestions([]);
     navigate(`/search?query=${value}`);
   };
 
-  // 🧠 Debounced API call
+  //  Debounced API call
   useEffect(() => {
     if (!query.trim()) {
       setSuggestions([]);
@@ -40,7 +40,7 @@ function Searchbar() {
     return () => clearTimeout(timer);
   }, [query]);
 
-  // ❌ Close dropdown on outside click
+  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
@@ -83,7 +83,7 @@ function Searchbar() {
         <Search />
       </motion.button>
 
-      {/* Suggestions Dropdown */}
+      {/*  Suggestions Dropdown */  }
       <AnimatePresence>
         {(suggestions.length > 0 || loading) && (
           <motion.div

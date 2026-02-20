@@ -47,3 +47,26 @@ body {
 .swiper-pagination-bullet-active {
   background-color: #fbbf24 !important;
 }
+/* Minimal Dark Scrollbar */
+
+/* Width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #0f0f0f;
+}
+
+/* Thumb */
+::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+/* Hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a3a;
+}

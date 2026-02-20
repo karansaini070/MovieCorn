@@ -43,7 +43,8 @@ const AppContent = () => {
   const hideNavbar =
     location.pathname !== "/" &&
     location.pathname !== "/search" &&
-    location.pathname !== "/watchlist";
+    location.pathname !== "/watchlist"&&
+     !location.pathname.startsWith("/movie/");
 
   return (
     <>

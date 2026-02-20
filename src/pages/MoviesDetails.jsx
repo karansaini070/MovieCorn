@@ -1,32 +1,61 @@
-import { Star, Clock, Calendar, Play, Heart, X } from "lucide-react";
-import { useParams, useNavigate } from "react-router-dom";
+import { Star, Clock, Calendar, Play, Heart } from "lucide-react";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { getMovieDetails, getMovieTrailer } from "../api/movieapi";
 import Loading from "../components/Loading";
 
 const MoviesDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const [showTrailer, setShowTrailer] = useState(false);
   const [trailerKey, setTrailerKey] = useState(null);
   const [added, setAdded] = useState(false);
 
+  // 3D Poster State
+  const [rotate, setRotate] = useState({ x: 0, y: 0 });
+
+  // Animation Variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 },
+    },
+  };
+
+  const posterVariants = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 0.6 },
+    },
+  };
+
+  // Fetch Movie
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
         const res = await getMovieDetails(id);
         setMovie(res.data);
 
-        // ✅ check already in watchlist
         const watchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
         const exists = watchlist.some((item) => item.id === res.data.id);
         setAdded(exists);
       } catch (error) {
-        console.error("Movie details error:", error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -35,40 +64,57 @@ const MoviesDetails = () => {
     fetchMovieDetails();
   }, [id]);
 
+  // Trailer
   const handleWatchTrailer = async () => {
-    try {
-      const res = await getMovieTrailer(id);
+    const res = await getMovieTrailer(id);
+    const trailer = res.data.results.find(
+      (v) => v.type === "Trailer" && v.site === "YouTube"
+    );
 
-      const trailer = res.data.results.find(
-        (video) => video.type === "Trailer" && video.site === "YouTube"
-      );
-
-      if (trailer) {
-        setTrailerKey(trailer.key);
-        setShowTrailer(true);
-      } else {
-        alert("Trailer not available ");
-      }
-    } catch (error) {
-      console.log("Trailer error:", error);
+    if (trailer) {
+      setTrailerKey(trailer.key);
+      setShowTrailer(true);
+    } else {
+      alert("Trailer not available");
     }
   };
 
-  //  ADD TO WATCHLIST
-  const handleAddToWatchlist = () => {
-    const watchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
+  // Watchlist Toggle
+  const handleWatchlistToggle = () => {
+    let watchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
 
-    if (!watchlist.some((item) => item.id === movie.id)) {
+    const exists = watchlist.some((item) => item.id === movie.id);
+
+    if (exists) {
+      watchlist = watchlist.filter((item) => item.id !== movie.id);
+      setAdded(false);
+    } else {
       watchlist.push({
         id: movie.id,
         title: movie.title,
         poster_path: movie.poster_path,
         vote_average: movie.vote_average,
       });
-
-      localStorage.setItem("watchlist", JSON.stringify(watchlist));
       setAdded(true);
     }
+
+    localStorage.setItem("watchlist", JSON.stringify(watchlist));
+  };
+
+  // 3D Mouse Handlers
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const rotateY = ((x / rect.width) - 0.5) * 20;
+    const rotateX = -((y / rect.height) - 0.5) * 20;
+
+    setRotate({ x: rotateX, y: rotateY });
+  };
+
+  const handleMouseLeave = () => {
+    setRotate({ x: 0, y: 0 });
   };
 
   if (loading) {
@@ -82,47 +128,52 @@ const MoviesDetails = () => {
   return (
     <>
       <section className="relative min-h-screen w-full text-white">
-
-        {/* BACKGROUND POSTER */}
+        {/* Background */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
           }}
         />
-
-        {/* DARK OVERLAY */}
         <div className="absolute inset-0 bg-black/70" />
 
-        {/* CLOSE ICON */}
-        <button
-          onClick={() => navigate("/")}
-          className="absolute top-6 right-6 z-20 bg-black/60 hover:bg-black/80 text-white p-2 rounded-full transition"
+        {/* Content */}
+        <motion.div
+          className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-40 flex flex-col lg:flex-row gap-10 lg:gap-16"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
         >
-          <X size={24} />
-        </button>
-
-        {/* CONTENT */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-20 flex flex-col lg:flex-row gap-10 lg:gap-16">
-
-          {/* POSTER */}
-          <div className="w-full lg:w-[320px] flex justify-center lg:justify-start shrink-0">
-            <img
+          {/* Poster 3D */}
+          <motion.div
+            className="w-full lg:w-[320px] flex justify-center lg:justify-start shrink-0"
+            variants={posterVariants}
+            style={{ perspective: 1000 }}
+          >
+            <motion.img
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
               alt={movie.title}
-              className="rounded-2xl shadow-2xl w-[220px] sm:w-[260px] lg:w-full"
+              className="rounded-2xl shadow-2xl w-[220px] sm:w-[260px] lg:w-full cursor-pointer"
+              animate={{
+                rotateX: rotate.x,
+                rotateY: rotate.y,
+              }}
+              transition={{ type: "spring", stiffness: 180, damping: 15 }}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              whileHover={{
+                boxShadow: "0px 30px 60px rgba(0,0,0,0.7)",
+              }}
             />
-          </div>
+          </motion.div>
 
-          {/* DETAILS */}
-          <div className="flex flex-col gap-6 max-w-3xl">
-
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight">
+          {/* Details */}
+          <motion.div className="flex flex-col gap-6 max-w-3xl">
+            <motion.h1 variants={itemVariants} className="text-3xl sm:text-4xl lg:text-5xl font-semibold">
               {movie.title}
-            </h1>
+            </motion.h1>
 
-            {/* META INFO */}
-            <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-gray-300 text-sm">
+            <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-6 text-gray-300 text-sm">
               <span className="flex items-center gap-2">
                 <Star size={18} className="text-yellow-400" />
                 {movie.vote_average?.toFixed(1)}
@@ -137,73 +188,75 @@ const MoviesDetails = () => {
                 <Calendar size={18} />
                 {movie.release_date?.slice(0, 4)}
               </span>
-            </div>
+            </motion.div>
 
-            {/* GENRES */}
-            <div className="flex gap-3 flex-wrap">
-              {movie.genres?.map((genre) => (
-                <span
-                  key={genre.id}
-                  className="px-4 py-1 rounded-full border border-white/30 text-xs sm:text-sm"
-                >
-                  {genre.name}
+            <motion.div variants={itemVariants} className="flex gap-3 flex-wrap">
+              {movie.genres?.map((g) => (
+                <span key={g.id} className="px-4 py-1 rounded-full border border-white/30 text-sm">
+                  {g.name}
                 </span>
               ))}
-            </div>
+            </motion.div>
 
-            {/* DESCRIPTION */}
-            <p className="text-gray-300 leading-relaxed text-sm sm:text-base">
+            <motion.p variants={itemVariants} className="text-gray-300 leading-relaxed">
               {movie.overview}
-            </p>
+            </motion.p>
 
-            {/* ACTION BUTTONS */}
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mt-4">
-
-              <button
+            {/* Buttons */}
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 mt-4">
+              {/* Trailer */}
+              <motion.button
                 onClick={handleWatchTrailer}
-                className="flex items-center justify-center gap-3 bg-white text-black px-8 py-4 rounded-full font-medium hover:bg-gray-200 transition"
+                whileHover={{
+                  y: -5,
+                  scale: 1.04,
+                  boxShadow: "0px 12px 30px rgba(255,255,255,0.25)",
+                }}
+                whileTap={{ scale: 0.96, y: 0 }}
+                transition={{ type: "spring", stiffness: 260, damping: 18 }}
+                className="flex items-center justify-center gap-3 bg-white text-black px-8 py-4 rounded-full font-medium"
               >
                 <Play size={20} />
                 Watch Trailer
-              </button>
+              </motion.button>
 
-              <button
-                onClick={handleAddToWatchlist}
-                disabled={added}
-                className={`flex items-center justify-center gap-3 px-8 py-4 rounded-full transition
-                   ${added
-                    ? "bg-green-600 text-white cursor-not-allowed"
-                    : "border border-white/40 hover:bg-white/10"
+              {/* Watchlist Toggle */}
+              <motion.button
+                onClick={handleWatchlistToggle}
+                whileHover={{
+                  y: -5,
+                  scale: 1.04,
+                  boxShadow: "0px 12px 30px rgba(255,255,255,0.15)",
+                }}
+                whileTap={{ scale: 0.96, y: 0 }}
+                transition={{ type: "spring", stiffness: 260, damping: 18 }}
+                className={`flex items-center justify-center gap-3 px-8 py-4 rounded-full
+                  ${
+                    added
+                      ? "bg-red-600 text-white"
+                      : "border border-white/40 hover:bg-white/10"
                   }`}
               >
                 <Heart
                   size={20}
-                  className={added ? "text-red-500 fill-red-500" : "text-white"}
+                  className={added ? "fill-white text-white" : "text-white"}
                 />
-                {added ? "Added to Watchlist" : "Add to Watchlist"}
-              </button>
-
-
-            </div>
-          </div>
-        </div>
+                {added ? "Remove from Watchlist" : "Add to Watchlist"}
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </section>
 
-      {/* TRAILER MODAL */}
+      {/* Trailer Modal */}
       {showTrailer && (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4">
-
-          <div
-            className="absolute inset-0"
-            onClick={() => setShowTrailer(false)}
-          />
-
+          <div className="absolute inset-0" onClick={() => setShowTrailer(false)} />
           <div className="relative z-10 w-full max-w-4xl aspect-video">
             <iframe
               className="w-full h-full rounded-xl"
-              src={`https://www.youtube.com/embed/${trailerKey}?rel=0&modestbranding=1`}
-              title="Movie Trailer"
-              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              src={`https://www.youtube.com/embed/${trailerKey}`}
+              title="Trailer"
               allowFullScreen
             />
           </div>
